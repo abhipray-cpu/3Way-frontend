@@ -1,30 +1,44 @@
 <template>
-  <nav>
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
-  </nav>
-  <router-view/>
+  <div id="container">
+    <transition name="fade">
+      <router-view></router-view>
+    </transition>
+  </div>
 </template>
 
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
+<script>
+import SocketioService from './socketio.service.js';
+export default {
+  async mounted(){
+    await SocketioService.setupSocketConnection();
+        await SocketioService.setUsername()
+  },
+  async unmounted(){
+    await SocketioService.disconnect()
+  },
+  async beforeUpdate(){
+    await SocketioService.disconnect()
+  },
+  async beforeMount(){
+    await SocketioService.disconnect()
+  }
 
-nav {
-  padding: 30px;
 }
+</script>
 
-nav a {
-  font-weight: bold;
-  color: #2c3e50;
+<style scoped>
+#container{
+  width:100vw;
+height:100vh;
+overflow-x:hidden;
+overflow-y:auto;
+position:fixed;
+left:0;
+top:0;
+padding:0;
+
 }
-
-nav a.router-link-exact-active {
-  color: #42b983;
+#container::-webkit-scrollbar{
+  display: none;
 }
 </style>
